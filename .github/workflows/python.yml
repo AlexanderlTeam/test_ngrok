@@ -20,7 +20,10 @@ jobs:
         pip install -r requirements.txt
     
     - name: Run Python script
-      run: python new_code.py
+      run: |
+        chcp 65001
+        python new_code.py
       env:
         PYTHONUNBUFFERED: 1
-  
+        PYTHONIOENCODING: utf-8
+    
