@@ -1,3 +1,7 @@
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -25,21 +29,21 @@ class BrowserAutomation:
         self.downloads_path = str(Path.home() / "Downloads")
         
     def cleanup_downloads(self):
-        """حذف ملفات APK التي تحتوي على كلمة 'black' في اسمها من مجلد التنزيلات"""
+        """Delete APK files containing the word 'black' in their name from the downloads folder"""
         try:
             for filename in os.listdir(self.downloads_path):
                 if filename.lower().endswith('.apk') and 'black' in filename.lower():
                     file_path = os.path.join(self.downloads_path, filename)
                     try:
                         os.remove(file_path)
-                        print(f"تم حذف الملف: {filename}")
+                        print(f"File deleted: {filename}")
                     except Exception as e:
-                        print(f"فشل في حذف الملف {filename}: {str(e)}")
+                        print(f"Failed to delete file {filename}: {str(e)}")
         except Exception as e:
-            print(f"حدث خطأ أثناء تنظيف مجلد التنزيلات: {str(e)}")
+            print(f"Error while cleaning downloads folder: {str(e)}")
 
     def create_driver(self):
-        """إنشاء متصفح"""
+        """Create browser instance"""
         try:
             edge_options = EdgeOptions()
             edge_service = EdgeService(EdgeChromiumDriverManager().install())
@@ -56,10 +60,10 @@ class BrowserAutomation:
                     chrome_service = ChromeService(ChromeDriverManager().install())
                     return webdriver.Chrome(service=chrome_service, options=chrome_options)
                 except:
-                    raise Exception("لم يتم العثور على متصفح مدعوم")
+                    raise Exception("No supported browser found")
 
     def visit_apkpure(self, tab_index):
-        """زيارة موقع APKPure بشكل متكرر"""
+        """Visit APKPure site repeatedly"""
         while True:
             try:
                 self.apkpure_driver.switch_to.window(self.apkpure_tabs[tab_index])
@@ -69,7 +73,7 @@ class BrowserAutomation:
                 continue
 
     def visit_uptodown(self, tab_index):
-        """زيارة موقع Uptodown وتحميل التطبيق"""
+        """Visit Uptodown site and download the app"""
         try:
             self.uptodown_driver.switch_to.window(self.uptodown_tabs[tab_index])
             self.uptodown_driver.get("https://black-lotus.en.uptodown.com/android/download")
@@ -79,28 +83,28 @@ class BrowserAutomation:
                 EC.presence_of_element_located((By.CSS_SELECTOR, "#detail-download-button"))
             )
             download_button.click()
-            print(f"تم النقر على زر التحميل في التبويب {tab_index}")
+            print(f"Download button clicked in tab {tab_index}")
             
         except Exception as e:
-            print(f"حدث خطأ في التبويب {tab_index}: {str(e)}")
+            print(f"Error in tab {tab_index}: {str(e)}")
 
     def run(self):
-        """تشغيل البرنامج الرئيسي"""
+        """Run main program"""
         self.cleanup_downloads()
         
-        # إنشاء نافذتين منفصلتين
-        print("جاري إنشاء نافذة APKPure...")
+        # Create two separate windows
+        print("Creating APKPure window...")
         self.apkpure_driver = self.create_driver()
-        print("جاري إنشاء نافذة Uptodown...")
+        print("Creating Uptodown window...")
         self.uptodown_driver = self.create_driver()
         
-        # فتح 10 تبويبات في نافذة APKPure
+        # Open 10 tabs in APKPure window
         self.apkpure_tabs.append(self.apkpure_driver.current_window_handle)
         for _ in range(9):
             self.apkpure_driver.execute_script("window.open('');")
             self.apkpure_tabs.append(self.apkpure_driver.window_handles[-1])
         
-        # فتح 10 تبويبات في نافذة Uptodown
+        # Open 10 tabs in Uptodown window
         self.uptodown_tabs.append(self.uptodown_driver.current_window_handle)
         for _ in range(9):
             self.uptodown_driver.execute_script("window.open('');")
@@ -108,35 +112,35 @@ class BrowserAutomation:
 
         threads = []
         
-        # تشغيل تبويبات APKPure
+        # Run APKPure tabs
         for i in range(10):
             thread = threading.Thread(target=self.visit_apkpure, args=(i,))
             threads.append(thread)
             thread.start()
 
-        # تشغيل تبويبات Uptodown
+        # Run Uptodown tabs
         for i in range(10):
             thread = threading.Thread(target=self.visit_uptodown, args=(i,))
             threads.append(thread)
             thread.start()
 
-        # تشغيل عملية التنظيف الدورية
+        # Run periodic cleanup
         cleanup_thread = threading.Thread(target=self.periodic_cleanup)
         cleanup_thread.daemon = True
         cleanup_thread.start()
 
-        # انتظار انتهاء جميع threads
+        # Wait for all threads to complete
         for thread in threads:
             thread.join()
 
     def periodic_cleanup(self):
-        """تنظيف دوري لمجلد التنزيلات كل 5 ثواني"""
+        """Periodic cleanup of downloads folder every 5 seconds"""
         while True:
             self.cleanup_downloads()
             time.sleep(5)
 
     def cleanup(self):
-        """إغلاق المتصفحات"""
+        """Close browsers"""
         if self.apkpure_driver:
             try:
                 self.apkpure_driver.quit()
@@ -153,6 +157,6 @@ if __name__ == "__main__":
         automation = BrowserAutomation()
         automation.run()
     except KeyboardInterrupt:
-        print("\nإيقاف البرنامج...")
+        print("\nStopping program...")
     finally:
         automation.cleanup()
