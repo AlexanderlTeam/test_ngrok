@@ -1,34 +1,34 @@
-name: Python Automation
+# name: Python Automation
 
-on:
-  schedule:
-    - cron: '0 * * * *'  # تشغيل في بداية كل ساعة
+# # on:
+# #   schedule:
+# #     - cron: '0 * * * *'  # تشغيل في بداية كل ساعة
 
-jobs:
-  run-automation:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        iteration: [1, 2, 3, 4, 5]  # تحديد 5 تكرارات
+# jobs:
+#   run-automation:
+#     runs-on: windows-latest
+#     strategy:
+#       matrix:
+#         iteration: [1, 2, 3, 4, 5]  # تحديد 5 تكرارات
     
-    steps:
-    - uses: actions/checkout@v2
+#     steps:
+#     - uses: actions/checkout@v2
     
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
+#     - name: Set up Python
+#       uses: actions/setup-python@v2
+#       with:
+#         python-version: '3.9'
     
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+#     - name: Install Python dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
     
-    - name: Run Python script
-      run: |
-        chcp 65001
-        python new_code.py
-      env:
-        PYTHONUNBUFFERED: 1
-        PYTHONIOENCODING: utf-8
-        ITERATION_NUMBER: ${{ matrix.iteration }}  # رقم التكرار الحالي
+#     - name: Run Python script
+#       run: |
+#         chcp 65001
+#         python new_code.py
+#       env:
+#         PYTHONUNBUFFERED: 1
+#         PYTHONIOENCODING: utf-8
+#         ITERATION_NUMBER: ${{ matrix.iteration }}  # رقم التكرار الحالي
