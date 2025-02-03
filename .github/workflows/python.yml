@@ -1,6 +1,6 @@
 name: Python Automation
 
-on:[workflow_dispatch]
+on: [workflow_dispatch]
 #   schedule:
 #     - cron: '0 * * * *'  # تشغيل في بداية كل ساعة
 
