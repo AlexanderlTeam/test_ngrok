@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        iteration: [1, 2, 3, 4, 5]  # تحديد 5 تكرارات
+        iteration: [1, 2]  # تحديد 5 تكرارات
     
     steps:
     - uses: actions/checkout@v2
