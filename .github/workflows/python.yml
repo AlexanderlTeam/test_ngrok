@@ -10,7 +10,7 @@ on:
 jobs:
   run-automation:
     runs-on: windows-latest
-    timeout-minutes: 30  # إيقاف العمل بعد 30 دقيقة
+    timeout-minutes: 1  # إيقاف العمل بعد 30 دقيقة
     strategy:
       matrix:
         iteration: [1, 2]  # تحديد 5 تكرارات
@@ -42,7 +42,7 @@ jobs:
       if: ${{ matrix.iteration == 2 }}  # تنفيذ فقط في التكرار الأخير
       run: |
         echo "Running for 28 minutes before starting a new workflow..."
-        sleep 1680  # انتظار 28 دقيقة (1680 ثانية)
+        sleep 40  # انتظار 28 دقيقة (1680 ثانية)
       
     - name: Trigger new workflow
       if: ${{ matrix.iteration == 2 }}  # تنفيذ فقط في التكرار الأخير
