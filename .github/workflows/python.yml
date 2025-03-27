@@ -8,9 +8,24 @@ on:
 #     - cron: '0 * * * *'  # تشغيل في بداية كل ساعة
 
 jobs:
+  monitor-and-trigger:
+    runs-on: windows-latest
+    steps:
+    - name: Wait and trigger new workflow
+      run: |
+        echo "Waiting 28 minutes before starting new workflow..."
+        sleep 20  # انتظار 28 دقيقة
+        
+    - name: Trigger new workflow
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.WORKFLOW_PAT }}
+        event-type: start-automation
+        
   run-automation:
     runs-on: windows-latest
-    timeout-minutes: 1  # إيقاف العمل بعد 30 دقيقة
+    timeout-minutes: 2  # إيقاف العمل بعد 30 دقيقة
+    needs: []  # لا ينتظر أي job آخر
     strategy:
       matrix:
         iteration: [1, 2]  # تحديد 5 تكرارات
@@ -42,11 +57,4 @@ jobs:
       if: ${{ matrix.iteration == 2 }}  # تنفيذ فقط في التكرار الأخير
       run: |
         echo "Running for 28 minutes before starting a new workflow..."
-        sleep 40  # انتظار 28 دقيقة (1680 ثانية)
-      
-    - name: Trigger new workflow
-      if: ${{ matrix.iteration == 2 }}  # تنفيذ فقط في التكرار الأخير
-      uses: peter-evans/repository-dispatch@v2
-      with:
-        token: ${{ secrets.WORKFLOW_PAT }}
-        event-type: start-automation
+        sleep 20  # انتظار 28 دقيقة (1680 ثانية)
