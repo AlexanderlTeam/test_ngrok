@@ -154,6 +154,7 @@ class BrowserAutomation:
 
 if __name__ == "__main__":
     try:
+        print("start automation")
         automation = BrowserAutomation()
         automation.run()
     except KeyboardInterrupt:
