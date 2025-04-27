@@ -1,4 +1,4 @@
-name: Python Automation
+name: Python test
 
 on:
   workflow_dispatch:  # تشغيل يدوي
@@ -28,7 +28,7 @@ jobs:
     needs: []  # لا ينتظر أي job آخر
     strategy:
       matrix:
-        iteration: [1, 2]  # تحديد 5 تكرارات
+        iteration: [1, 2,3,4,5]  # تحديد 5 تكرارات
     
     steps:
     - uses: actions/checkout@v2
