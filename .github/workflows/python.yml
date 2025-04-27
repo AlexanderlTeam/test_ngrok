@@ -28,7 +28,7 @@ jobs:
     needs: []  # لا ينتظر أي job آخر
     strategy:
       matrix:
-        iteration: [1, 2,3,4,5]  # تحديد 5 تكرارات
+        iteration: [1, 2]  # تحديد 5 تكرارات
     
     steps:
     - uses: actions/checkout@v2
@@ -43,6 +43,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
+    - name: Install playwright browser    
+      run: |
+        playwright install
+
     - name: Run Python script
       run: |
         chcp 65001
@@ -51,6 +55,9 @@ jobs:
         PYTHONUNBUFFERED: 1
         PYTHONIOENCODING: utf-8
         ITERATION_NUMBER: ${{ matrix.iteration }}  # رقم التكرار الحالي
+        YOUTUBE_COOKIES_BASE64: ${{ secrets.YOUTUBE_COOKIES_BASE64 }}  # كوكيز يوتيوب (JSON مباشر أو Base64)
+        YOUTUBE_CREDENTIALS: ${{ secrets.YOUTUBE_CREDENTIALS }}  # بيانات اعتماد Google Cloud (اختياري)
+        YOUTUBE_TOKENS: ${{ secrets.YOUTUBE_TOKENS }}  # رموز OAuth (اختياري)
         
     # خطوة لتشغيل workflow جديد قبل انتهاء الـ timeout
     - name: Start new workflow before timeout
