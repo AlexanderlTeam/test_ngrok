@@ -857,7 +857,7 @@ class BrowserAutomation:
         for target, args in [
             (self.visit_apkpure, (0,)),
             (self.visit_youtube_and_blogs, (0,)),
-            (self.visit_uptodown, (0,))
+            (self.visit_apkpure, (0,))
         ]:
             t = threading.Thread(target=target, args=args)
             threads.append(t)
